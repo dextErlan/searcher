@@ -1,0 +1,25 @@
+{
+  "name": "anthill/searcher",
+  "description": "parse query string",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Ivan Pyankov",
+      "email": "unit.1985@gmail.com"
+    }
+  ],
+
+  "autoload": {
+    "psr-4": {
+      "Searcher\\": "src/Searcher"
+    }
+  },
+
+  "require": {
+    "php": ">=5.3.23"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0"
+  }
+}
