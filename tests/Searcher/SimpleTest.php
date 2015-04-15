@@ -5,10 +5,10 @@ use Searcher\LoopBack\LoopbackQueryParser;
 class SimpleTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testOne()
-    {
-//        $a = new OrderParser();
-//        $results = $a->parse('+asd,-qwe,dfjdfjhd');
+//    public function testOne()
+//    {
+//        $a = new OrderParser('+asd,-qwe,dfjdfjhd');
+//        $results = $a->get();
 //        foreach ($results as $result) {
 //            $this->assertInstanceOf(\Searcher\QueryParser\Order\OrderInterface::class, $result);
 //        }
@@ -18,15 +18,15 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
 //        $this->assertEquals('asd',$results[0]->getField());
 //        $this->assertEquals('qwe',$results[1]->getField());
 //        $this->assertEquals('dfjdfjhd',$results[2]->getField());
-    }
+//    }
 
     public function testComplex()
     {
-        $string = 'filter[where][asd]=123&filter[where][qwe][lt]=123&filter[where][asdd]=432,123,123&filter[where][asd1][lt]=321&filter[where][asd1][gt]=123';
+        $string = 'filter[where][asd]=123&filter[where][qwe][lt]=123&filter[where][asdd]=432,123,456&filter[where][asd1][lt]=321&filter[where][asd1][gt]=123';
         $string .= "&q=asdasdasd&order=+asd,-qwe&page[limit]=53&page[offset]=10";
         $queryArray = array();
         parse_str($string, $queryArray);
-        $queryParser = LoopbackQueryParser::create($queryArray);
+        $queryParser = new LoopbackQueryParser($queryArray);
         $expected =
             array(
                 new \Searcher\QueryParser\Filter\Filter(
@@ -42,7 +42,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
                 new \Searcher\QueryParser\Filter\Filter(
                     "asdd",
                     \Searcher\QueryParser\Filter\Filter::OPERATOR_EQ,
-                    array(432, 123, 123)
+                    array(432, 123, 456)
                 ),
                 new \Searcher\QueryParser\Filter\Filter(
                     "asd1",
@@ -69,12 +69,12 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
         $esExpected = array(
             "query" => array(
                 "filtered" => array(
-                    "match"=>array(
-                        "_all"=>"asdasdasd"
+                    "match" => array(
+                        "_all" => "asdasdasd"
                     ),
                     "filter" => array(
                         array(
-                            "term" => 123
+                            "term" => array("asd" => 123)
                         ),
                         array(
                             "range" => array(
@@ -86,9 +86,11 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
                         ),
                         array(
                             "terms" => array(
-                                432,
-                                123,
-                                123
+                                "asdd" => array(
+                                    432,
+                                    123,
+                                    456
+                                )
                             )
                         ),
                         array(

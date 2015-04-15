@@ -60,23 +60,59 @@ class ElasticSearchTransformer
     {
         $filters = array();
         foreach ($this->queryParser->getFilters() as $filter) {
-            if ($filter->getOperator() === Filter::OPERATOR_EQ) {
-                if (is_array($filter->getValue())) {
-                    $filters[][self::FILTER_TERMS] = $filter->getValue();
-                } else {
-                    $filters[][self::FILTER_TERM] = $filter->getValue();
-                }
+            $value = $filter->getValue();
+            $operator = $filter->getOperator();
+            $field = $filter->getField();
+
+            if ($operator === Filter::OPERATOR_EQ) {
+                $filters[] = $this->getTermFilter($field, $value);
                 continue;
             }
-            if (is_array($filter->getValue())) {
-                foreach ($filter->getValue() as $value) {
-                    $filters[][self::FILTER_RANGE][$filter->getField()][$filter->getOperator()] = $value;
-                }
-                continue;
+
+            foreach ($this->getRangeFilter($field, $value, $operator) as $row) {
+                $filters[] = $row;
             }
-            $filters[][self::FILTER_RANGE][$filter->getField()][$filter->getOperator()] = $filter->getValue();
         }
+
         return $filters;
+    }
+
+    private function getTermFilter($field, $value)
+    {
+        if (is_array($value)) {
+            return array(
+                self::FILTER_TERMS => array($field => $value)
+            );
+        }
+
+        return array(
+            self::FILTER_TERM => array($field => $value)
+        );
+    }
+
+    private function getRangeFilter($field, $value, $operator)
+    {
+        $array = array();
+
+        if (is_array($value)) {
+            foreach ($value as $val) {
+                $array[] = array(
+                    self::FILTER_RANGE => array(
+                        $field => array($operator => $val)
+                    )
+                );
+            }
+
+            return $array;
+        }
+
+        return array(
+            array(
+                self::FILTER_RANGE => array(
+                    $field => array($operator => $value)
+                )
+            )
+        );
     }
 
     private function parseOrder()
@@ -90,6 +126,7 @@ class ElasticSearchTransformer
                 )
             );
         }
+
         return $sorts;
     }
 
@@ -107,6 +144,7 @@ class ElasticSearchTransformer
         if (!$query->getTerm()) {
             return null;
         }
+
         return array("_all" => $query->getTerm());
     }
 

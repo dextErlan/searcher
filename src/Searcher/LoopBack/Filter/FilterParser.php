@@ -31,10 +31,8 @@ class FilterParser
     public function getFilters()
     {
 
-        $rawFilter = ArrayUtils::get($this->filters, static::FILTER_WHERE, array());
-        if (!is_array($rawFilter)) {
-            $rawFilter = array();
-        }
+        $rawFilter = ArrayUtils::getArray($this->filters, static::FILTER_WHERE, array());
+
         $filters = $this->parseWhere($rawFilter);
 
         return $filters;

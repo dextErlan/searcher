@@ -26,7 +26,7 @@ class LoopbackQueryParser implements QueryParserInterface
     private $filter;
     private $parameters;
 
-    private function __construct(array $parameters)
+    public function __construct(array $parameters)
     {
         $this->parameters = $parameters;
     }
@@ -38,7 +38,7 @@ class LoopbackQueryParser implements QueryParserInterface
     public function getFilters()
     {
         if (!$this->filter) {
-            $filterParams = ArrayUtils::get($this->parameters, self::FILTER_VAR, array());
+            $filterParams = ArrayUtils::getArray($this->parameters, self::FILTER_VAR, array());
             $this->filter = new FilterParser($filterParams);
         }
 
@@ -47,22 +47,13 @@ class LoopbackQueryParser implements QueryParserInterface
 
     public function getSearch()
     {
-        $searchString = ArrayUtils::get($this->parameters, self::SEARCH_VAR, null);
+        $searchString = ArrayUtils::getScalar($this->parameters, self::SEARCH_VAR, null);
         return (new SearchParser($searchString))->get();
-    }
-
-    /**
-     * @param $parameters
-     * @return $this
-     */
-    public static function create($parameters)
-    {
-        return new static($parameters);
     }
 
     public function getOrder()
     {
-        $orderParams = ArrayUtils::get($this->parameters, self::ORDER_VAR, null);
+        $orderParams = ArrayUtils::getScalar($this->parameters, self::ORDER_VAR, null);
         return (new OrderParser($orderParams))->get();
     }
 
@@ -71,7 +62,7 @@ class LoopbackQueryParser implements QueryParserInterface
      */
     public function getPage()
     {
-        $pageParams = ArrayUtils::get($this->parameters, self::PAGE_VAR, array());
+        $pageParams = ArrayUtils::getArray($this->parameters, self::PAGE_VAR, array());
         return (new PageParser($pageParams))->get();
     }
 }

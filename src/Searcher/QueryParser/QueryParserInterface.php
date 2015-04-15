@@ -16,12 +16,6 @@ use Searcher\QueryParser\Search\SearchInterface;
 interface QueryParserInterface
 {
     /**
-     * @param $parameters
-     * @return $this
-     */
-    public static function create($parameters);
-
-    /**
      * @return FilterInterface[]
      */
     public function getFilters();

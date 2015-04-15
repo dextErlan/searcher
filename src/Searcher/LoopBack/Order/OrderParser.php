@@ -17,6 +17,11 @@ class OrderParser
      */
     public function __construct($order)
     {
+        if (!is_scalar($order)) {
+            $order = array();
+        } else {
+            $order = explode(',', $order);
+        }
 
         $this->order = $order;
     }
@@ -26,12 +31,7 @@ class OrderParser
      */
     public function get()
     {
-        $order = $this->order;
-        if (!is_scalar($order)) {
-            return array();
-        }
-        $orderArray = explode(',', $order);
-        return $this->parseOrder($orderArray);
+        return $this->parseOrder($this->order);
     }
 
     /**
@@ -53,6 +53,7 @@ class OrderParser
                 $orderDirection = Order::DIRECTION_ASC;
                 break;
         }
+
         return $orderDirection;
     }
 
