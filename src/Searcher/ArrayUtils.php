@@ -93,4 +93,34 @@ abstract class ArrayUtils
         return $array;
     }
 
+    /**
+     * Test whether an array is a list
+     *
+     * A list is a collection of values assigned to continuous integer keys
+     * starting at 0 and ending at count() - 1.
+     *
+     * For example:
+     * <code>
+     * $list = array('a', 'b', 'c', 'd');
+     * $list = array(
+     *     0 => 'foo',
+     *     1 => 'bar',
+     *     2 => array('foo' => 'baz'),
+     * );
+     * </code>
+     *
+     * @param  mixed $value
+     * @param  bool  $allowEmpty    Is an empty list a valid list?
+     * @return bool
+     */
+    public static function isList($value, $allowEmpty = false)
+    {
+        if (!is_array($value)) {
+            return false;
+        }
+        if (!$value) {
+            return $allowEmpty;
+        }
+        return (array_values($value) === $value);
+    }
 }
