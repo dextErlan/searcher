@@ -2,30 +2,25 @@
 /**
  * Created by IntelliJ IDEA.
  * User: unit
- * Date: 16.04.15
- * Time: 11:04
+ * Date: 17.04.15
+ * Time: 11:06
  */
 
 namespace Searcher\LoopBack\Parser\Filter;
 
 
+use Searcher\Events\FieldEvent;
+use Searcher\Events\OperatorEvent;
+use Searcher\LoopBack\Parser\BuilderInterface;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition as CompareCondition;
-use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\EqCondition;
-use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\InqCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\ConditionInterface;
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
 use Searcher\StringUtils;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class FilterConditionBuilder
+class FilterConditionBuilder implements BuilderInterface
 {
-    private $acceptedGroups = array(
-        FilterCondition::CONDITION_AND,
-        FilterCondition::CONDITION_OR,
-    );
-
-    private $group = FilterCondition::CONDITION_AND;
-
-    private $conditionOperationsMap = array(
+    private $comparesMap = array(
         FilterCondition::CONDITION_LTE => CompareCondition\LteCondition::class,
         FilterCondition::CONDITION_LT => CompareCondition\LtCondition::class,
         FilterCondition::CONDITION_GT => CompareCondition\GtCondition::class,
@@ -33,115 +28,103 @@ class FilterConditionBuilder
         FilterCondition::CONDITION_IN => CompareCondition\InqCondition::class,
         FilterCondition::CONDITION_NIN => CompareCondition\NinCondition::class,
         FilterCondition::CONDITION_NEQ => CompareCondition\NeqCondition::class,
+        FilterCondition::CONDITION_EQ => CompareCondition\EqCondition::class,
     );
 
-    private $conditions;
+    private $compareOperator = FilterCondition::CONDITION_EQ;
 
     /**
-     * @param $group
-     * @param $parameters
+     * @var EventDispatcherInterface
      */
-    public function __construct($group, $parameters)
+    private $dispatcher;
+    /**
+     * @var string
+     */
+    private $field;
+
+    /**
+     * @var mixed
+     */
+    private $value;
+
+    /**
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher = null)
     {
-        $this->group = $this->initGroup($group);
-
-        if (!is_array($parameters)) {
-            throw new InvalidConditionException('$parameters must be an array');
-        }
-
-        $conditions = $this->initConditions($parameters);
-
-        if (empty($conditions)) {
-            throw new InvalidConditionException();
-        }
-        $this->conditions = $conditions;
-    }
-
-    private function initGroup($group)
-    {
-        $group = StringUtils::toLower($group);
-        if (in_array($group, $this->acceptedGroups)) {
-            return $group;
-        }
-        throw new InvalidConditionException('invalid group');
+        $this->dispatcher = $dispatcher;
     }
 
     /**
-     * @return string
+     * @param $condition
+     * @return $this
      */
-    public function getGroup()
+    public function setCompareOperator($condition)
     {
-        return $this->group;
-    }
-
-
-    /**
-     * @return ConditionInterface[]
-     */
-    public function getConditions()
-    {
-        return $this->conditions;
+        $condition = StringUtils::toLower($condition);
+        $this->compareOperator = $condition;
+        return $this;
     }
 
     /**
-     * @param array $rawParameters
-     * @return Condition\ConditionInterface[]
+     * @param $field
+     * @param $value
+     * @return $this
      */
-    private function initConditions(array $rawParameters)
+    public function setConditions($field, $value)
     {
-        $array = array();
-        foreach ($rawParameters as $operator => $parameters) {
-
-            $operator = StringUtils::toLower($operator);
-
-            try {
-                if (!isset($this->conditionOperationsMap[$operator])) {
-                    if (!is_array($parameters)) {
-                        $array[] = new EqCondition($operator, $parameters);
-                        continue;
-                    }
-                    $array[] = new InqCondition($operator, $parameters);
-                    continue;
-                }
-                $conditions = $this->buildConditions($operator, $parameters);
-
-            } catch (InvalidConditionException $e) {
-                continue;
-            }
-            foreach ($conditions as $condition) {
-                $array[] = $condition;
-            }
-        }
-        if(empty($array)){
-            throw new InvalidConditionException();
-        }
-
-        return $array;
+        $this->field = $field;
+        $this->value = $value;
+        return $this;
     }
 
     /**
-     * @param $operator
-     * @param $parameters
-     * @return ConditionInterface[]
+     * @return ConditionInterface
+     * @throws InvalidConditionException
      */
-    private function buildConditions($operator, $parameters)
+    public function build()
     {
-        /* @var $resultArray ConditionInterface[] */
-        $resultArray = array();
-        if (!is_array($parameters)) {
-            throw new InvalidConditionException('$parameters must be an array');
-        }
-        $className = $this->conditionOperationsMap[$operator];
+        $condition = StringUtils::toLower($this->compareOperator);
 
-        foreach ($parameters as $field => $value) {
-            try {
-                $resultArray[] = new $className($field, $value);
-            } catch (InvalidConditionException $e) {
-                continue;
-            }
+        if (!isset($this->comparesMap[$condition])) {
+            throw new InvalidConditionException("No such condition");
         }
 
-        return $resultArray;
+        if ($condition == FilterCondition::CONDITION_EQ && is_array($this->value)) {
+            $condition = FilterCondition::CONDITION_IN;
+        }
+
+        if (!isset($this->comparesMap[$condition])) {
+            throw new InvalidConditionException("Operator doesn't supported");
+        }
+
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(
+                OperatorEvent::EVENT_NAME,
+                new OperatorEvent($condition, $this->field, $this->value)
+            );
+            $this->dispatcher->dispatch(FieldEvent::EVENT_NAME, new FieldEvent($this->field));
+        }
+
+        $className = $this->comparesMap[$condition];
+
+        //todo:
+        /* @var $object CompareCondition\AbstractCondition */
+        $object = forward_static_call_array(
+            array($className, "create"),
+            array($this->field, $this->value, $this->dispatcher)
+        );
+
+        return $object;
+    }
+
+    public static function create($compareOperator, $field, $value, EventDispatcherInterface $dispatcher = null)
+    {
+        $instance = new static();
+        $instance->setCompareOperator($compareOperator);
+        $instance->setConditions($field, $value);
+        $instance->setEventDispatcher($dispatcher);
+        return $instance->build();
     }
 
 }
