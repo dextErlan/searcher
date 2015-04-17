@@ -12,6 +12,7 @@ namespace Searcher\LoopBack\Parser;
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
 use Searcher\LoopBack\Parser\Filter\FilterGroupBuilder;
 use Searcher\LoopBack\Parser\Filter\FilterGroupConditionBuilder;
+use Searcher\LoopBack\Parser\Order\Order;
 use Searcher\LoopBack\Parser\Order\OrderBuilder;
 use Searcher\LoopBack\Parser\Pagination\LimitBuilder;
 use Searcher\LoopBack\Parser\Pagination\OffsetBuilder;
@@ -71,7 +72,7 @@ class Builder implements BuilderInterface
     private $offset = OffsetBuilder::OFFSET_DEFAULT;
 
     /**
-     * @var OrderBuilder[]
+     * @var Order[]
      */
     private $orders = array();
 
@@ -111,7 +112,7 @@ class Builder implements BuilderInterface
     }
 
     /**
-     * @return Order\OrderBuilder[]
+     * @return Order[]
      */
     public function getOrders()
     {

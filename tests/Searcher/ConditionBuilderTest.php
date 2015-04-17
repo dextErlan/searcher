@@ -20,6 +20,7 @@ use Searcher\LoopBack\Parser\Filter\FilterConditionBuilder;
 use Searcher\LoopBack\Parser\Filter\FilterGroupBuilder;
 use Searcher\LoopBack\Parser\Filter\FilterGroupConditionBuilder;
 use Searcher\LoopBack\Parser\Order\Order;
+use Searcher\Transformer\ElasticSearch;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
@@ -286,7 +287,7 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
         $eventDispatcher->addListener(
             GroupEvent::EVENT_NAME,
             function (GroupEvent $event) {
-                if($event->getGroupName() == "and"){
+                if ($event->getGroupName() == "and") {
                     throw new InvalidConditionException();
                 }
             }
@@ -326,12 +327,78 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
 
         $builder = new Builder($inputData, $eventDispatcher);
         $builder->build();
-        $this->assertCount(1,$builder->getFilters());
+        $this->assertCount(1, $builder->getFilters());
         $this->assertEquals("or", $builder->getFilters()[0]->getGroup());
-        $this->assertEquals(array(FilterConditionBuilder::create("eq","field3",111,$eventDispatcher)), $builder->getFilters()[0]->getConditions());
+        $this->assertEquals(
+            array(FilterConditionBuilder::create("eq", "field3", 111, $eventDispatcher)),
+            $builder->getFilters()[0]->getConditions()
+        );
         $this->assertEquals(12345, $builder->getLimit());
         $this->assertEquals(54321, $builder->getOffset());
         $this->assertEquals(array(new Order("field200", "desc")), $builder->getOrders());
 
+    }
+
+    public function testElasticTransformer()
+    {
+        $inputQuery = array(
+            "where" => array(
+                "nin" => array("user_id" => array(3)),
+                "neq" => array("product_id" => "27"),
+                "or" => array(
+                    "lte" => array(
+                        "details.id" => 27
+                    ),
+                    "gte" => array(
+                        "details.id" => 10
+                    ),
+                    "in" => array("user_id" => array(1)),
+                )
+            )
+        );
+
+        $builder = new Builder($inputQuery);
+        $esBuilder = new ElasticSearch($builder);
+        $result = $esBuilder->build()->transform();
+        $this->assertEquals(array("size" => 25, "from" => 0), $result);
+
+
+        $expect = array(
+            "from" => 0,
+            "size" => 25,
+            "query" => array(
+                "filtered" => array(
+                    "filter" => array(
+                        "bool" => array(
+                            "must_not" => array(
+                                array(
+                                    "terms" => array(
+                                        "user_id" => array(3),
+                                    ),
+                                ),
+                                array(
+                                    "term" => array("product_id" => 27),
+                                ),
+                            ),
+                            "should" => array(
+                                array(
+                                    "range" => array(
+                                        "details.id" => array("lte" => 27),
+                                    ),
+                                ),
+                                array(
+                                    "range" => array(
+                                        "details.id" => array("gte" => 10),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+        $esBuilder = new ElasticSearch($builder->build());
+        $result = $esBuilder->build()->transform();
+        $this->assertEquals($expect, $result);
     }
 }
