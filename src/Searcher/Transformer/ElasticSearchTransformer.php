@@ -68,7 +68,7 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
         }
 
         if (!empty($builder->getFilters())) {
-            $query["query"]["filtered"]["filter"][self::BOOL] = array();
+            $query["body"]["query"]["filtered"]["filter"][self::BOOL] = array();
         }
         foreach ($builder->getFilters() as $filter) {
             $groupName = self::BOOL_MUST;
@@ -109,7 +109,7 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
                         )
                     );
                 }
-                $query["query"]["filtered"]["filter"][self::BOOL][$groupName][] = $conditionArray;
+                $query["body"]["query"]["filtered"]["filter"][self::BOOL][$groupName][] = $conditionArray;
             }
         }
         $this->results = $query;

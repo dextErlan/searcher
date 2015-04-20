@@ -366,36 +366,38 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
         $expect = array(
             "from" => 0,
             "size" => 25,
-            "query" => array(
-                "filtered" => array(
-                    "filter" => array(
-                        "bool" => array(
-                            "must_not" => array(
-                                array(
-                                    "terms" => array(
-                                        "user_id" => array(3),
+            "body" => array(
+                "query" => array(
+                    "filtered" => array(
+                        "filter" => array(
+                            "bool" => array(
+                                "must_not" => array(
+                                    array(
+                                        "terms" => array(
+                                            "user_id" => array(3),
+                                        ),
+                                    ),
+                                    array(
+                                        "term" => array("product_id" => 27),
                                     ),
                                 ),
-                                array(
-                                    "term" => array("product_id" => 27),
-                                ),
-                            ),
-                            "should" => array(
-                                array(
-                                    "range" => array(
-                                        "details.id" => array("lte" => 27),
+                                "should" => array(
+                                    array(
+                                        "range" => array(
+                                            "details.id" => array("lte" => 27),
+                                        ),
                                     ),
-                                ),
-                                array(
-                                    "range" => array(
-                                        "details.id" => array("gte" => 10),
+                                    array(
+                                        "range" => array(
+                                            "details.id" => array("gte" => 10),
+                                        ),
                                     ),
                                 ),
                             ),
                         ),
                     ),
                 ),
-            ),
+            )
         );
         $esBuilder = new ElasticSearchTransformer($builder->build());
         $result = $esBuilder->build()->transform();
