@@ -13,7 +13,7 @@ use Searcher\LoopBack\Parser\Builder;
 use Searcher\LoopBack\Parser\BuilderInterface;
 use Searcher\LoopBack\Parser\Filter\FilterCondition;
 
-class ElasticSearch implements TransformerInterface, BuilderInterface
+class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
 {
     const BOOL_MUST = "must";
     const BOOL_MUST_NOT = "must_not";

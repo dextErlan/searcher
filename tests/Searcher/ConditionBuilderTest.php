@@ -20,7 +20,7 @@ use Searcher\LoopBack\Parser\Filter\FilterConditionBuilder;
 use Searcher\LoopBack\Parser\Filter\FilterGroupBuilder;
 use Searcher\LoopBack\Parser\Filter\FilterGroupConditionBuilder;
 use Searcher\LoopBack\Parser\Order\Order;
-use Searcher\Transformer\ElasticSearch;
+use Searcher\Transformer\ElasticSearchTransformer;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
@@ -358,7 +358,7 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
         );
 
         $builder = new Builder($inputQuery);
-        $esBuilder = new ElasticSearch($builder);
+        $esBuilder = new ElasticSearchTransformer($builder);
         $result = $esBuilder->build()->transform();
         $this->assertEquals(array("size" => 25, "from" => 0), $result);
 
@@ -397,7 +397,7 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                 ),
             ),
         );
-        $esBuilder = new ElasticSearch($builder->build());
+        $esBuilder = new ElasticSearchTransformer($builder->build());
         $result = $esBuilder->build()->transform();
         $this->assertEquals($expect, $result);
     }
