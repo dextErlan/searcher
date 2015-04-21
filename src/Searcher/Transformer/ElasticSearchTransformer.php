@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: unit
- * Date: 17.04.15
- * Time: 17:55
- */
 
 namespace Searcher\Transformer;
-
 
 use Searcher\LoopBack\Parser\Builder;
 use Searcher\LoopBack\Parser\BuilderInterface;
@@ -67,10 +60,12 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
             );
         }
 
-        if (!empty($builder->getFilters())) {
+        $filters = $builder->getFilters();
+        if (!empty($filters)) {
             $query["body"]["query"]["filtered"]["filter"][self::BOOL] = array();
         }
-        foreach ($builder->getFilters() as $filter) {
+
+        foreach ($filters as $filter) {
             $groupName = self::BOOL_MUST;
             if ($filter->getGroup() == FilterCondition::CONDITION_OR) {
                 $groupName = self::BOOL_SHOULD;

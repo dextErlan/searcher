@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: unit
- * Date: 17.04.15
- * Time: 11:06
- */
 
 namespace Searcher\LoopBack\Parser\Filter;
 
@@ -21,14 +15,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class FilterConditionBuilder implements BuilderInterface
 {
     private $comparesMap = array(
-        FilterCondition::CONDITION_LTE => CompareCondition\LteCondition::class,
-        FilterCondition::CONDITION_LT => CompareCondition\LtCondition::class,
-        FilterCondition::CONDITION_GT => CompareCondition\GtCondition::class,
-        FilterCondition::CONDITION_GTE => CompareCondition\GteCondition::class,
-        FilterCondition::CONDITION_IN => CompareCondition\InqCondition::class,
-        FilterCondition::CONDITION_NIN => CompareCondition\NinCondition::class,
-        FilterCondition::CONDITION_NEQ => CompareCondition\NeqCondition::class,
-        FilterCondition::CONDITION_EQ => CompareCondition\EqCondition::class,
+        FilterCondition::CONDITION_LTE => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\LteCondition",
+        FilterCondition::CONDITION_LT => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\LtCondition",
+        FilterCondition::CONDITION_GT => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\GtCondition",
+        FilterCondition::CONDITION_GTE => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\GteCondition",
+        FilterCondition::CONDITION_IN => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\InqCondition",
+        FilterCondition::CONDITION_NIN => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\NinCondition",
+        FilterCondition::CONDITION_NEQ => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\NeqCondition",
+        FilterCondition::CONDITION_EQ => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\EqCondition",
     );
 
     private $compareOperator = FilterCondition::CONDITION_EQ;
@@ -63,6 +57,7 @@ class FilterConditionBuilder implements BuilderInterface
     {
         $condition = StringUtils::toLower($condition);
         $this->compareOperator = $condition;
+
         return $this;
     }
 
@@ -75,6 +70,7 @@ class FilterConditionBuilder implements BuilderInterface
     {
         $this->field = $field;
         $this->value = $value;
+
         return $this;
     }
 
@@ -124,6 +120,7 @@ class FilterConditionBuilder implements BuilderInterface
         $instance->setCompareOperator($compareOperator);
         $instance->setConditions($field, $value);
         $instance->setEventDispatcher($dispatcher);
+
         return $instance->build();
     }
 

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: unit
- * Date: 17.04.15
- * Time: 15:10
- */
 
 namespace Searcher\LoopBack\Parser\Pagination;
 

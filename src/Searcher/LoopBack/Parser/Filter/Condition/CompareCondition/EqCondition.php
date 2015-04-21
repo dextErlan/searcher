@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: unit
- * Date: 16.04.15
- * Time: 11:54
- */
 
 namespace Searcher\LoopBack\Parser\Filter\Condition\CompareCondition;
 

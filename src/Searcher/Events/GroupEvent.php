@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: unit
- * Date: 17.04.15
- * Time: 14:52
- */
 
 namespace Searcher\Events;
 

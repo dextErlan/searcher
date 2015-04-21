@@ -1,19 +1,11 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: unit
- * Date: 15.04.15
- * Time: 18:11
- */
 
 namespace Searcher\LoopBack\Parser;
 
 
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
-use Searcher\LoopBack\Parser\Filter\FilterGroupBuilder;
 use Searcher\LoopBack\Parser\Filter\FilterGroupConditionBuilder;
 use Searcher\LoopBack\Parser\Order\Order;
-use Searcher\LoopBack\Parser\Order\OrderBuilder;
 use Searcher\LoopBack\Parser\Pagination\LimitBuilder;
 use Searcher\LoopBack\Parser\Pagination\OffsetBuilder;
 use Searcher\StringUtils;
@@ -24,19 +16,19 @@ class Builder implements BuilderInterface
 
     private $mapping = array(
         self::FILTER_WHERE => array(
-            "className" => FilterGroupBuilder::class,
+            "className" => "\\Searcher\\LoopBack\\Parser\\Filter\\FilterGroupBuilder",
             "field" => "filters"
         ),
         self::FILTER_ORDER => array(
-            "className" => OrderBuilder::class,
+            "className" => "\\Searcher\\LoopBack\\Parser\\Order\\OrderBuilder",
             "field" => "orders"
         ),
         self::FILTER_LIMIT => array(
-            "className" => LimitBuilder::class,
+            "className" => "\\Searcher\\LoopBack\\Parser\\Pagination\\LimitBuilder",
             "field" => "limit"
         ),
         self::FILTER_OFFSET => array(
-            "className" => OffsetBuilder::class,
+            "className" => "\\Searcher\\LoopBack\\Parser\\Pagination\\OffsetBuilder",
             "field" => "offset"
         ),
     );
