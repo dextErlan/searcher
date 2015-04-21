@@ -112,7 +112,7 @@ class FilterGroupConditionBuilder implements BuilderInterface
             foreach ($fieldValues as $field => $value) {
 
                 $builder = new FilterConditionBuilder();
-                if ($operator) {
+                if ($operator !== null) {
                     $builder->setCompareOperator($operator);
                 }
                 $builder->setEventDispatcher($this->dispatcher);

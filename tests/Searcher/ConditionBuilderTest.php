@@ -226,6 +226,14 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testOrFilters()
+    {
+        $inputData = json_decode('{"where":{"or":[{"field1":1},{"field2":"asd"}]},"limit":2,"skip":0}',1);
+        $builder = new Builder($inputData);
+        $arrayFilters = $builder->build()->getFilters();
+        $this->assertEmpty($arrayFilters);
+    }
+
     public function testEventFilters()
     {
         $inputData = array(
