@@ -115,6 +115,13 @@ class FilterConditionBuilder implements BuilderInterface
         return $object;
     }
 
+    /**
+     * @param $compareOperator
+     * @param $field
+     * @param $value
+     * @param EventDispatcherInterface $dispatcher
+     * @return ConditionInterface
+     */
     public static function create($compareOperator, $field, $value, EventDispatcherInterface $dispatcher = null)
     {
         $instance = new static();

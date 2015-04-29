@@ -3,6 +3,7 @@
 namespace Searcher;
 
 
+use Searcher\Events\ConditionEvent;
 use Searcher\Events\FieldEvent;
 use Searcher\Events\GroupEvent;
 use Searcher\Events\LimitEvent;
@@ -15,6 +16,7 @@ use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\InqCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\LikeCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\LtCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\NeqCondition;
+use Searcher\LoopBack\Parser\Filter\Condition\ConditionInterface;
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
 use Searcher\LoopBack\Parser\Filter\FilterCondition;
 use Searcher\LoopBack\Parser\Filter\FilterConditionBuilder;
@@ -119,7 +121,6 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, $groupObject);
 
     }
-
 
     public function testComplex()
     {
@@ -288,7 +289,8 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                     "nEq" => array(
                         "field11" => array("asd", 1, 2, 3),
                         "field12" => "asd",
-                    )
+                    ),
+                    "like" => array("field14" => "OlOlo")
                 ),
                 "some_piece_of_shit" =>
                     array(
@@ -345,20 +347,41 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
         $eventDispatcher->addListener(
             FieldEvent::EVENT_NAME,
             function (FieldEvent $event) {
-                if (!in_array($event->getField(), array("field200", "field3"))) {
+                if (!in_array($event->getField(), array("field200", "field3", "field15"))) {
                     throw new InvalidConditionException();
                 };
+            }
+        );
+
+        $eventDispatcher->addListener(
+            ConditionEvent::EVENT_NAME,
+            function (ConditionEvent $event) {
+                $condition = $event->getCondition();
+                if ($condition->getOperator() == FilterCondition::CONDITION_LIKE) {
+                    $value = mb_strtolower($condition->getValue());
+                    $condition->setValue($value);
+                }
             }
         );
 
         $builder = new Builder($inputData, $eventDispatcher);
         $builder->build();
         $this->assertCount(1, $builder->getFilters());
-        $this->assertEquals("or", $builder->getFilters()[0]->getGroup());
-        $this->assertEquals(
-            array(FilterConditionBuilder::create("eq", "field3", 111, $eventDispatcher)),
-            $builder->getFilters()[0]->getConditions()
+        $filters = $builder->getFilters();
+        $this->assertEquals("or", $filters[0]->getGroup());
+
+        /* @var $expected ConditionInterface[] */
+        $expected = array(
+            FilterConditionBuilder::create("eq", "field3", 111, $eventDispatcher),
+            FilterConditionBuilder::create("like", "field15", "ololo", $eventDispatcher)
         );
+
+        foreach ($filters[0]->getConditions() as $key => $condition) {
+            $this->assertEquals($expected[$key]->getValue(), $condition->getValue());
+            $this->assertEquals($expected[$key]->getField(), $condition->getField());
+            $this->assertEquals($expected[$key]->getOperator(), $condition->getOperator());
+        }
+
         $this->assertEquals(12345, $builder->getLimit());
         $this->assertEquals(54321, $builder->getOffset());
         $this->assertEquals(array(new Order("field200", "desc")), $builder->getOrders());

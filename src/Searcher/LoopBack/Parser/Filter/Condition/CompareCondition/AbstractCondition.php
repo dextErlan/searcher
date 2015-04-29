@@ -3,6 +3,7 @@
 namespace Searcher\LoopBack\Parser\Filter\Condition\CompareCondition;
 
 
+use Searcher\Events\ConditionEvent;
 use Searcher\LoopBack\Parser\BuilderInterface;
 use Searcher\LoopBack\Parser\Filter\Condition\ConditionInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -61,15 +62,19 @@ abstract class AbstractCondition implements BuilderInterface, ConditionInterface
      * @static
      * @param $field
      * @param $value
-     * @param null $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      * @return AbstractCondition
      */
-    public static function create($field, $value, $dispatcher = null)
+    public static function create($field, $value, EventDispatcherInterface $dispatcher = null)
     {
         $instance = new static();
         $instance->setField($field);
         $instance->setValue($value);
         $instance->setDispatcher($dispatcher);
+        if ($dispatcher) {
+            $dispatcher->dispatch(ConditionEvent::EVENT_NAME, new ConditionEvent($instance));
+        }
+
         return $instance->build();
     }
 }
