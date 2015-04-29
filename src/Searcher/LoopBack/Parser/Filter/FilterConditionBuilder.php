@@ -23,6 +23,7 @@ class FilterConditionBuilder implements BuilderInterface
         FilterCondition::CONDITION_NIN => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\NinCondition",
         FilterCondition::CONDITION_NEQ => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\NeqCondition",
         FilterCondition::CONDITION_EQ => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\EqCondition",
+        FilterCondition::CONDITION_LIKE => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\LikeCondition",
     );
 
     private $compareOperator = FilterCondition::CONDITION_EQ;

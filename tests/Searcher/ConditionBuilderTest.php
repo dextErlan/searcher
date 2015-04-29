@@ -12,6 +12,7 @@ use Searcher\LoopBack\Parser\Builder;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\EqCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\GtCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\InqCondition;
+use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\LikeCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\LtCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\NeqCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
@@ -48,6 +49,9 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
             "nEq" => array(
                 "field11" => array("asd", 1, 2, 3),
                 "field12" => "asd",
+            ),
+            "LiKe" => array(
+                "field15" => "asd",
             )
         );
 
@@ -63,6 +67,7 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
             LtCondition::create("field7", 8),
             GtCondition::create("field9", 3),
             NeqCondition::create("field12", "asd"),
+            LikeCondition::create("field15", "asd"),
         );
         $this->assertEquals($expect, $conditions->getConditions());
         $this->assertEquals(FilterCondition::CONDITION_AND, $conditionBuilder->getGroup());
@@ -154,6 +159,10 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                         "field12" => "asd",
                     )
                 ),
+                "like" => array(
+                    "field15" => "ololo",
+                    "field16" => "pewpew",
+                ),
                 "some_piece_of_shit" =>
                     array(
                         "field4" => 123
@@ -215,6 +224,15 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                     "neq" => array(
                         "field11" => array("asd", 1, 2, 3),
                         "field12" => "asd",
+                    ),
+                )
+            ),
+            FilterGroupConditionBuilder::create(
+                "and",
+                array(
+                    "like" => array(
+                        "field15" => "ololo",
+                        "field16" => "pewpew",
                     )
                 )
             ),
@@ -228,7 +246,7 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testOrFilters()
     {
-        $inputData = json_decode('{"where":{"or":[{"field1":1},{"field2":"asd"}]},"limit":2,"skip":0}',1);
+        $inputData = json_decode('{"where":{"or":[{"field1":1},{"field2":"asd"}]},"limit":2,"skip":0}', 1);
         $builder = new Builder($inputData);
         $arrayFilters = $builder->build()->getFilters();
         $this->assertEmpty($arrayFilters);
@@ -361,7 +379,8 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                         "details.id" => 10
                     ),
                     "in" => array("user_id" => array(1)),
-                )
+                ),
+                "like" => array("description" => "My awe")
             )
         );
 
@@ -401,6 +420,16 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                                         ),
                                     ),
                                 ),
+                                "must" => array(
+                                    array(
+                                        "regexp" => array(
+                                            "description" => array(
+                                                "value" => "My awe.*",
+                                                "max_determinized_states" => 1
+                                            )
+                                        )
+                                    ),
+                                )
                             ),
                         ),
                     ),

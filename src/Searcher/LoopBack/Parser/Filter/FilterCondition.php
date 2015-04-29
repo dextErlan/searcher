@@ -44,6 +44,10 @@ class FilterCondition {
      * Equal (=)
      */
     const CONDITION_EQ = 'eq';
+    /**
+     * Not equal (!=)
+     */
+    const CONDITION_LIKE = 'like';
 
     public static function getConditions(){
         $reflection = new \ReflectionObject(new self);

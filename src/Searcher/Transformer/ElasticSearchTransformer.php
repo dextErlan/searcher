@@ -14,6 +14,7 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
     const BOOL = "bool";
     const TERM = "term";
     const TERMS = "terms";
+    const REGEXP = "regexp";
     /**
      * @var Builder
      */
@@ -38,6 +39,8 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
             FilterCondition::CONDITION_LT,
             FilterCondition::CONDITION_LTE,
         );
+
+        $regexpOperators = array(FilterCondition::CONDITION_LIKE);
 
         $mustNotOperators = array(
             FilterCondition::CONDITION_NIN,
@@ -67,9 +70,11 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
 
         foreach ($filters as $filter) {
             $groupName = self::BOOL_MUST;
+
             if ($filter->getGroup() == FilterCondition::CONDITION_OR) {
                 $groupName = self::BOOL_SHOULD;
             }
+
             foreach ($filter->getConditions() as $condition) {
 
                 $conditionArray = array(
@@ -104,6 +109,19 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
                         )
                     );
                 }
+
+                if (in_array($operator, $regexpOperators)) {
+                    $conditionArray = array(
+                        self::REGEXP => array(
+                            $condition->getField() => array(
+                                // todo: sanitize values
+                                "value" => sprintf("%s.*", $condition->getValue()),
+                                "max_determinized_states" => 1
+                            )
+                        )
+                    );
+                }
+
                 $query["body"]["query"]["filtered"]["filter"][self::BOOL][$groupName][] = $conditionArray;
             }
         }
