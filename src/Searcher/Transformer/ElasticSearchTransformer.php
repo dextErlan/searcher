@@ -116,7 +116,6 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
                             $condition->getField() => array(
                                 // todo: sanitize values
                                 "value" => sprintf("%s.*", $condition->getValue()),
-                                "max_determinized_states" => 1
                             )
                         )
                     );

@@ -425,7 +425,6 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                                         "regexp" => array(
                                             "description" => array(
                                                 "value" => "My awe.*",
-                                                "max_determinized_states" => 1
                                             )
                                         )
                                     ),
