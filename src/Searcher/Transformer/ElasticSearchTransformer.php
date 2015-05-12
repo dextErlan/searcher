@@ -58,7 +58,7 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
         $query["size"] = $builder->getLimit();
 
         foreach ($builder->getOrders() as $order) {
-            $query["sort"][] = array(
+            $query["body"]["sort"][] = array(
                 $order->getField() => $order->getDirection()
             );
         }

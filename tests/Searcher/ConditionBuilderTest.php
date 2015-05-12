@@ -404,6 +404,9 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                     "in" => array("user_id" => array(1)),
                 ),
                 "like" => array("description" => "My awe")
+            ),
+            "order" => array(
+                "user_id"=>"asc"
             )
         );
 
@@ -417,6 +420,11 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
             "from" => 0,
             "size" => 25,
             "body" => array(
+                "sort" => array(
+                    array(
+                        "user_id" => "asc"
+                    )
+                ),
                 "query" => array(
                     "filtered" => array(
                         "filter" => array(
