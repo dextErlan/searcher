@@ -3,6 +3,7 @@
 namespace Searcher\LoopBack\Parser\Filter;
 
 
+use Searcher\Events\BeforeConditionBuildEvent;
 use Searcher\Events\FieldEvent;
 use Searcher\Events\OperatorEvent;
 use Searcher\LoopBack\Parser\BuilderInterface;
@@ -83,8 +84,11 @@ class FilterConditionBuilder implements BuilderInterface
     {
         $condition = StringUtils::toLower($this->compareOperator);
 
-        if (!isset($this->comparesMap[$condition])) {
-            throw new InvalidConditionException("No such condition");
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(
+                OperatorEvent::EVENT_NAME,
+                new OperatorEvent($condition, $this->field, $this->value)
+            );
         }
 
         if ($condition == FilterCondition::CONDITION_EQ && is_array($this->value)) {
@@ -96,15 +100,10 @@ class FilterConditionBuilder implements BuilderInterface
         }
 
         if ($this->dispatcher) {
-            $this->dispatcher->dispatch(
-                OperatorEvent::EVENT_NAME,
-                new OperatorEvent($condition, $this->field, $this->value)
-            );
             $this->dispatcher->dispatch(FieldEvent::EVENT_NAME, new FieldEvent($this->field));
         }
 
         $className = $this->comparesMap[$condition];
-
         //todo:
         /* @var $object CompareCondition\AbstractCondition */
         $object = forward_static_call_array(

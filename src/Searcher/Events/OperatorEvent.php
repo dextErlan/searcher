@@ -21,11 +21,11 @@ class OperatorEvent extends Event
      */
     private $value;
 
-    public function __construct($operator,$field,$value)
+    public function __construct(& $operator,& $field,& $value)
     {
-        $this->operator = $operator;
-        $this->field = $field;
-        $this->value = $value;
+        $this->operator = & $operator;
+        $this->field = & $field;
+        $this->value = & $value;
     }
 
     /**
@@ -50,6 +50,30 @@ class OperatorEvent extends Event
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @param mixed $operator
+     */
+    public function setOperator($operator)
+    {
+        $this->operator = $operator;
+    }
+
+    /**
+     * @param mixed $field
+     */
+    public function setField($field)
+    {
+        $this->field = $field;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
     }
 
 }
