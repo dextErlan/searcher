@@ -148,7 +148,7 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
 
         $this->results = $query;
 
-        $this->getLogger()->debug(json_encode($this->results));
+        $this->getLogger()->debug(json_encode($this->results), array('library' => 'searcher'));
 
         return $this;
     }
