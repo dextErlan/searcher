@@ -28,7 +28,7 @@ class LtCondition extends AbstractCondition
             throw new InvalidConditionException('$value must be integer');
         }
 
-        $this->setValue((int) $value);
+        $this->setValue($value);
 
         return $this;
     }

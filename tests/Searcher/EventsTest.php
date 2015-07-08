@@ -24,58 +24,58 @@ class EventsTest extends \PHPUnit_Framework_TestCase
     public function testEventFilters()
     {
         $inputData = array(
-            "where" => array(
-                "field" => 1,
-                "field2" => 2,
-                "field3" => array(
-                    "field3" => 3,
-                    "field4" => 4,
+            'where' => array(
+                'field' => 1,
+                'field2' => 2,
+                'field3' => array(
+                    'field3' => 3,
+                    'field4' => 4,
                 ),
-                "field3a" => array(3, 4),
-                "and" => array(
-                    "field2" => 123,
-                    "field3" => 321,
-                    "Lt" => array(
-                        "field5" => array("asd", 1, 2, 3),
-                        "field6" => 1,
-                        "field7" => 8,
+                'field3a' => array(3, 4),
+                'and' => array(
+                    'field2' => 123,
+                    'field3' => 321,
+                    'Lt' => array(
+                        'field5' => array('asd', 1, 2, 3),
+                        'field6' => 1,
+                        'field7' => 8,
                     ),
-                    "Gt" => array(
-                        "field8" => array("asd", 1, 2, 3),
-                        "field9" => 3,
-                        "field10" => "ololo",
+                    'Gt' => array(
+                        'field8' => array('asd', 1, 2, 3),
+                        'field9' => 3,
+                        'field10' => 'ololo',
                     ),
                 ),
-                "or" => array(
-                    "field2" => 000,
-                    "field3" => 111,
-                    "Gt" => array(
-                        "field8" => array("asd", 1, 2, 3),
-                        "field9" => 3,
-                        "field10" => "ololo",
+                'or' => array(
+                    'field2' => 000,
+                    'field3' => 111,
+                    'Gt' => array(
+                        'field8' => array('asd', 1, 2, 3),
+                        'field9' => 3,
+                        'field10' => 'ololo',
                     ),
-                    "nEq" => array(
-                        "field11" => array("asd", 1, 2, 3),
-                        "field12" => "asd",
+                    'nEq' => array(
+                        'field11' => array('asd', 1, 2, 3),
+                        'field12' => 'asd',
                     ),
-                    "like" => array("field14" => "OlOlo")
+                    'like' => array('field14' => 'OlOlo')
                 ),
-                "some_piece_of_shit" =>
+                'some_piece_of_shit' =>
                     array(
-                        "field4" => 123
+                        'field4' => 123
                     )
             ),
-            "limit" => 100520,
-            "skip" => 45,
-            "order" => array(
-                "field100" => "AsC",
-                "field200" => "DeSc",
-                "field300" => "ololo",
+            'limit' => 100520,
+            'skip' => 45,
+            'order' => array(
+                'field100' => 'AsC',
+                'field200' => 'DeSc',
+                'field300' => 'ololo',
             ),
-            "some_crap" => array(
-                "asd" => array("dsfkjldflkjdf" => 1133),
-                "qwe" => 1133,
-                "zzzz" => "dlcvlkj",
+            'some_crap' => array(
+                'asd' => array('dsfkjldflkjdf' => 1133),
+                'qwe' => 1133,
+                'zzzz' => 'dlcvlkj',
             )
         );
 
@@ -83,7 +83,7 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         $eventDispatcher->addListener(
             GroupEvent::EVENT_NAME,
             function (GroupEvent $event) {
-                if ($event->getGroupName() == "and") {
+                if ($event->getGroupName() === FilterCondition::CONDITION_AND) {
                     throw new InvalidConditionException();
                 }
             }
@@ -106,7 +106,7 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         $eventDispatcher->addListener(
             OrderEvent::EVENT_NAME,
             function (OrderEvent $event) {
-                if ($event->getField() == "field100") {
+                if ($event->getField() === 'field100') {
                     throw new InvalidConditionException();
                 };
             }
@@ -115,7 +115,7 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         $eventDispatcher->addListener(
             FieldEvent::EVENT_NAME,
             function (FieldEvent $event) {
-                if (!in_array($event->getField(), array("field200", "field3", "field15"))) {
+                if (!in_array($event->getField(), array('field200', 'field3', 'field15'))) {
                     throw new InvalidConditionException();
                 };
             }
@@ -125,7 +125,7 @@ class EventsTest extends \PHPUnit_Framework_TestCase
             ConditionEvent::EVENT_NAME,
             function (ConditionEvent $event) {
                 $condition = $event->getCondition();
-                if ($condition->getOperator() == FilterCondition::CONDITION_LIKE) {
+                if ($condition->getOperator() === FilterCondition::CONDITION_LIKE) {
                     $value = mb_strtolower($condition->getValue());
                     $condition->setValue($value);
                 }
@@ -136,12 +136,12 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         $builder->build();
         $this->assertCount(1, $builder->getFilters());
         $filters = $builder->getFilters();
-        $this->assertEquals("or", $filters[0]->getGroup());
+        $this->assertEquals('or', $filters[0]->getGroup());
 
         /* @var $expected ConditionInterface[] */
         $expected = array(
-            FilterConditionBuilder::create("eq", "field3", 111, $eventDispatcher),
-            FilterConditionBuilder::create("like", "field15", "ololo", $eventDispatcher)
+            FilterConditionBuilder::create('eq', 'field3', 111, $eventDispatcher),
+            FilterConditionBuilder::create('like', 'field15', 'ololo', $eventDispatcher)
         );
 
         foreach ($filters[0]->getConditions() as $key => $condition) {
@@ -152,15 +152,15 @@ class EventsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(12345, $builder->getLimit());
         $this->assertEquals(54321, $builder->getOffset());
-        $this->assertEquals(array(new Order("field200", "desc")), $builder->getOrders());
+        $this->assertEquals(array(new Order('field200', 'desc')), $builder->getOrders());
 
     }
 
     public function testSwitchParameters()
     {
         $input = array(
-            "where" => array(
-                "foo" => "bar"
+            'where' => array(
+                'foo' => 'bar'
             )
         );
 
@@ -168,9 +168,9 @@ class EventsTest extends \PHPUnit_Framework_TestCase
         $eventDispatcher->addListener(
             OperatorEvent::EVENT_NAME,
             function (OperatorEvent $event) {
-                if ($event->getField() == "foo") {
-                    $event->setField("pew-pew");
-                    if ($event->getValue() == "bar") {
+                if ($event->getField() === 'foo') {
+                    $event->setField('pew-pew');
+                    if ($event->getValue() === 'bar') {
                         $value = [1, 2, 3, 4];
                     } else {
                         $value = [5, 6, 7, 8];
@@ -185,11 +185,11 @@ class EventsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $builder->getFilters());
         $filters = $builder->getFilters();
-        $this->assertEquals("and", $filters[0]->getGroup());
+        $this->assertEquals('and', $filters[0]->getGroup());
 
         /* @var $expected ConditionInterface[] */
         $expected = array(
-            FilterConditionBuilder::create(FilterCondition::CONDITION_IN, "pew-pew", [1, 2, 3, 4], $eventDispatcher),
+            FilterConditionBuilder::create(FilterCondition::CONDITION_IN, 'pew-pew', [1, 2, 3, 4], $eventDispatcher),
         );
 
         foreach ($filters[0]->getConditions() as $key => $condition) {

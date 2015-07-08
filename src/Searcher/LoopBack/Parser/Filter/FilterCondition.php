@@ -45,7 +45,7 @@ class FilterCondition {
      */
     const CONDITION_EQ = 'eq';
     /**
-     * Not equal (!=)
+     * Like 
      */
     const CONDITION_LIKE = 'like';
 
