@@ -42,11 +42,13 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
 
     /**
      * @param Builder $builder
+     * @param LoggerInterface $logger
      */
-    public function __construct(Builder $builder)
+    public function __construct(Builder $builder, LoggerInterface $logger = null)
     {
 
         $this->builder = $builder;
+        $this->logger = $logger;
     }
 
     private $results = array();
