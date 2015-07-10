@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class Builder implements BuilderInterface
 {
 
-    private $mapping = array(
+    private static $mapping = array(
         self::FILTER_WHERE => array(
             "className" => "\\Searcher\\LoopBack\\Parser\\Filter\\FilterGroupBuilder",
             "field" => "filters"
@@ -85,18 +85,18 @@ class Builder implements BuilderInterface
 
         foreach ($this->conditions as $key => $values) {
             $key = StringUtils::toLower($key);
-            if (!isset($this->mapping[$key])) {
+            if (!isset(self::$mapping[$key])) {
                 continue;
             }
 
-            $className = $this->mapping[$key]["className"];
+            $className = self::$mapping[$key]["className"];
 
             $data = forward_static_call_array(
                 array($className, "create"),
                 array($values, $this->dispatcher)
             );
 
-            $fieldName = $this->mapping[$key]["field"];
+            $fieldName = self::$mapping[$key]["field"];
             $this->$fieldName = $data;
         }
 
