@@ -89,23 +89,23 @@ Find first `10` entities starting from `2nd`, where `field == value` and sort it
 
 ```
 {
-“where” : {
-      “field”:”value”
+"where" : {
+      "field":"value"
      },
-“limit”:10,
-“skip”:2,
-“sort” : {“field2”:”asc”}
+"limit":10,
+"skip":2,
+"sort" : {"field2":"asc"}
 }
 ```
 
-Find all entities where `field` contains at least one of the values in  `[ ”value1”, ”value2”, ”value3” ]`, and sort it on `field2` ascending and `field3` descending:
+Find all entities where `field` contains at least one of the values in  `[ "value1", "value2", "value3" ]`, and sort it on `field2` ascending and `field3` descending:
 
 ```
 {
-“where” : {
-      “field”: [ ”value1”, ”value2”, ”value3” ]
+"where" : {
+      "field": [ "value1", "value2", "value3" ]
      },
-“sort” : { “field2”:”asc”, ”field3”:”desc” }
+"sort" : { "field2":"asc", "field3":"desc" }
 }
 ```
 
@@ -113,9 +113,9 @@ Find all entities where `field < 10 && field2 < 20 && field3 >= 5`:
 
 ```
 {
-“where” : {
-      “LT”:{“field”: 10,”field2”:20},
-      “GTE”:{“field3”: 5}
+"where" : {
+      "LT":{"field": 10,"field2":20},
+      "GTE":{"field3": 5}
      }
 }
 ```
@@ -124,10 +124,10 @@ Find all entities where ` field3 >= 5 &&  ( field < 10 || field2 < 20 )`:
 
 ```
 {
-    “where” : {
-        “GTE”:{“field3”: 5},
-        “OR: {
-            “LT”:{“field”: 10,”field2”:20},
+    "where" : {
+        "GTE":{"field3": 5},
+        "OR: {
+            "LT":{"field": 10,"field2":20},
         }
     }
 }
@@ -137,12 +137,12 @@ Equivalent:
 
 ```
 {
-    “where” : {
-        “AND”: {
-            “GTE”:{“field3”: 5}
+    "where" : {
+        "AND": {
+            "GTE":{"field3": 5}
         },
-        “OR: {
-            “LT”:{“field”: 10,”field2”:20},
+        "OR: {
+            "LT":{"field": 10,"field2":20},
         }
     }
 }
@@ -210,9 +210,9 @@ General example:
 
 ```php
 $inputQuery = array(
-     “where” => array(
-             “or” => array( “field” => “value”),
-             “and” => array( “field2” => “value”),
+     "where" => array(
+             "or" => array( "field" => "value"),
+             "and" => array( "field2" => "value"),
       )
 );
 $eventDispatcher = new EventDispatcher();
