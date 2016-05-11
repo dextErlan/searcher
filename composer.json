@@ -2,7 +2,7 @@
   "name": "anthill/searcher",
   "description": "parse query string",
   "minimum-stability": "stable",
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
       "name": "Ivan Pyankov",
