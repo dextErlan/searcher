@@ -1,5 +1,5 @@
 {
-  "name": "anthill/searcher",
+  "name": "keltanas/searcher",
   "description": "parse query string",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -7,6 +7,10 @@
     {
       "name": "Ivan Pyankov",
       "email": "unit.1985@gmail.com"
+    },
+    {
+      "name": "Nikolay Ermin",
+      "email": "keltanas@gmail.com"
     }
   ],
 
@@ -17,11 +21,11 @@
   },
 
   "require": {
-    "php": ">=5.3.23",
-    "symfony/event-dispatcher": "> 2.0",
+    "php": ">=7.0",
+    "symfony/event-dispatcher": "~2.8",
     "psr/log":"1.0.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "~4.0"
+    "phpunit/phpunit": "~4.8"
   }
 }
