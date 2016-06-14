@@ -19,93 +19,83 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testSimpleCondition()
     {
-        $condition = array(
+        $condition = [
             'field' => 1,
             'field2' => 2,
-            'field3' => array(
+            'field3' => [
                 'field3' => 3,
                 'field4' => 4,
-            ),
-            'field3a' => array(3, 4),
-            'Lt' => array(
-                'field5' => array('asd', 1, 2, 3),
-                'field6' => 1,
-                'field7' => 8,
-            ),
-            'Gt' => array(
-                'field8' => array('asd', 1, 2, 3),
-                'field9' => 3,
-                'field10' => 'ololo',
-            ),
-            'nEq' => array(
-                'field11' => array('asd', 1, 2, 3),
-                'field12' => 'asd',
-            ),
-            'LiKe' => array(
-                'field15' => 'asd',
-            )
-        );
+            ],
+            'field3a' => [3, 4],
+            'field5' =>['Lt' => ['asd', 1, 2, 3]],
+            'field6' => ['Lt' => 1],
+            'field7' => ['Lt' => 8],
+            'field8' => ['Gt' => ['asd', 1, 2, 3]],
+            'field9' => ['Gt' => 3],
+            'field10' => ['Gt' => 'ololo'],
+            'field11' => ['nEq' => ['asd', 1, 2, 3]],
+            'field12' => ['nEq' => 'asd'],
+            'field15' => ['LiKe' => 'asd'],
+        ];
 
         $conditionBuilder = new FilterGroupConditionBuilder();
         $conditionBuilder->setConditions($condition);
         $conditions = $conditionBuilder->build();
 
-        $expect = array(
+        $expect = [
             EqCondition::create('field', 1),
             EqCondition::create('field2', 2),
-            InqCondition::create('field3a', array(3, 4)),
+            InqCondition::create('field3a', [3, 4]),
             LtCondition::create('field6', 1),
             LtCondition::create('field7', 8),
             GtCondition::create('field9', 3),
             NeqCondition::create('field12', 'asd'),
             LikeCondition::create('field15', 'asd'),
-        );
+        ];
         $this->assertEquals($expect, $conditions->getConditions());
         $this->assertEquals(FilterCondition::CONDITION_AND, $conditionBuilder->getGroup());
     }
 
     public function testWhere()
     {
-        $condition = array(
+        $condition = [
             'field1' => 123,
-            'and' => array(
+            'and' => [
                 'field2' => 123,
-                'field3' => 321
-            ),
-            'or' => array(
+                'field3' => 321,
+            ],
+            'or' => [
                 'field2' => 000,
-                'field3' => 111
-            ),
-            'some_piece_of_shit' =>
-                array(
-                    'field4' => 123
-                )
-        );
+                'field3' => 111,
+            ],
+            'some_piece_of_shit' => [
+                'field4' => 123,
+            ],
+        ];
 
         $groupCondition = new FilterGroupBuilder();
-        $groupCondition->setGroupCondition($condition);
-        $groupObject = $groupCondition->build();
+        $groupObject = $groupCondition->build($condition);
 
-        $expect = array(
+        $expect = [
             FilterGroupConditionBuilder::create(
                 'and',
-                array('field1' => 123)
+                ['field1' => 123]
             ),
             FilterGroupConditionBuilder::create(
                 'and',
-                array(
+                [
                     'field2' => 123,
-                    'field3' => 321
-                )
+                    'field3' => 321,
+                ]
             ),
             FilterGroupConditionBuilder::create(
                 'or',
-                array(
+                [
                     'field2' => 000,
-                    'field3' => 111
-                )
-            )
-        );
+                    'field3' => 111,
+                ]
+            ),
+        ];
 
         $this->assertEquals($expect, $groupObject);
 
@@ -113,120 +103,109 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testComplex()
     {
-        $inputData = array(
-            'where' => array(
+        $inputData = [
+            'where' => [
                 'field' => 1,
                 'field2' => 2,
-                'field3' => array(
+                'field3' => [
                     'field3' => 3,
                     'field4' => 4,
-                ),
-                'field3a' => array(3, 4),
-                'and' => array(
+                ],
+                'field3a' => [3, 4],
+                'and' => [
                     'field2' => 123,
                     'field3' => 321,
-                    'Lt' => array(
-                        'field5' => array('asd', 1, 2, 3),
-                        'field6' => 1,
-                        'field7' => 8,
-                    ),
-                    'Gt' => array(
-                        'field8' => array('asd', 1, 2, 3),
-                        'field9' => 3,
-                        'field10' => 'ololo',
-                    ),
-                ),
-                'or' => array(
+
+                    'field5' => ['Lt' => ['asd', 1, 2, 3]],
+                    'field6' => ['Lt' => 1],
+                    'field7' => ['Lt' => 8],
+
+                    'field8' => ['Gt' => ['asd', 1, 2, 3]],
+                    'field9' => ['Gt' => 3],
+                    'field10' => ['Gt' => 'ololo'],
+                ],
+                'or' => [
                     'field2' => 000,
                     'field3' => 111,
-                    'Gt' => array(
-                        'field8' => array('asd', 1, 2, 3),
-                        'field9' => 3,
-                        'field10' => 'ololo',
-                    ),
-                    'nEq' => array(
-                        'field11' => array('asd', 1, 2, 3),
-                        'field12' => 'asd',
-                    )
-                ),
-                'like' => array(
+
+                    'field8' => ['Gt' => ['asd', 1, 2, 3]],
+                    'field9' => ['Gt' => 3],
+                    'field10' => ['Gt' => 'ololo'],
+
+                    'field11' => ['nEq' => ['asd', 1, 2, 3]],
+                    'field12' => ['nEq' => 'asd'],
+                ],
+                'like' => [
                     'field15' => 'ololo',
                     'field16' => 'pewpew',
-                ),
+                ],
                 'some_piece_of_shit' =>
-                    array(
-                        'field4' => 123
-                    )
-            ),
+                    [
+                        'field4' => 123,
+                    ],
+            ],
             'limit' => 100520,
             'skip' => 45,
-            'order' => array(
+            'order' => [
                 'field100' => 'AsC',
                 'field200' => 'DeSc',
                 'field300' => 'ololo',
-            ),
-            'some_crap' => array(
-                'asd' => array('dsfkjldflkjdf' => 1133),
+            ],
+            'some_crap' => [
+                'asd' => ['dsfkjldflkjdf' => 1133],
                 'qwe' => 1133,
                 'zzzz' => 'dlcvlkj',
-            )
-        );
+            ],
+        ];
 
-        $builder = new Builder($inputData);
-        $builder->build();
+        $builder = new Builder();
+        $builder->build($inputData);
         $this->assertEquals(45, $builder->getOffset());
         $this->assertEquals(100520, $builder->getLimit());
 
-        $expectOrders = array(
+        $expectOrders = [
             new Order('field100', 'asc'),
             new Order('field200', 'desc'),
-        );
+        ];
 
         $this->assertEquals($expectOrders, $builder->getOrders());
 
         /* @var $expectFilters FilterGroupConditionBuilder[] */
-        $expectFilters = array(
-            FilterGroupConditionBuilder::create('and', array('field' => 1)),
-            FilterGroupConditionBuilder::create('and', array('field2' => 2)),
-            FilterGroupConditionBuilder::create('and', array('field3a' => array(3, 4))),
+        $expectFilters = [
+            FilterGroupConditionBuilder::create('and', ['field' => 1]),
+            FilterGroupConditionBuilder::create('and', ['field2' => 2]),
+            FilterGroupConditionBuilder::create('and', ['field3a' => [3, 4]]),
             FilterGroupConditionBuilder::create(
                 'and',
-                array(
+                [
                     'field2' => 123,
                     'field3' => 321,
-                    'lt' => array(
-                        'field6' => 1,
-                        'field7' => 8,
-                    ),
-                    'gt' => array(
-                        'field9' => 3,
-                    ),
-                )
+                    'field6' => ['lt' => 1],
+                    'field7' => ['lt' => 8],
+
+                    'field9' => ['gt' => 3],
+                ]
             ),
             FilterGroupConditionBuilder::create(
                 'or',
-                array(
+                [
                     'field2' => 000,
                     'field3' => 111,
-                    'gt' => array(
-                        'field9' => 3,
-                    ),
-                    'neq' => array(
-                        'field11' => array('asd', 1, 2, 3),
-                        'field12' => 'asd',
-                    ),
-                )
+
+                    'field9' => ['gt' => 3],
+
+                    'field11' => ['neq' => ['asd', 1, 2, 3]],
+                    'field12' => ['neq' => 'asd'],
+                ]
             ),
             FilterGroupConditionBuilder::create(
                 'and',
-                array(
-                    'like' => array(
-                        'field15' => 'ololo',
-                        'field16' => 'pewpew',
-                    )
-                )
+                [
+                    'field15' => ['like' => 'ololo'],
+                    'field16' => ['like' => 'pewpew'],
+                ]
             ),
-        );
+        ];
 
         foreach ($builder->getFilters() as $key => $builder) {
             $this->assertEquals($expectFilters[$key]->getGroup(), $builder->getGroup());
@@ -237,26 +216,26 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
     public function testOrFilters()
     {
         $inputData = json_decode('{"where":{"or":[{"field1":1},{"field2":"asd"}]},"limit":2,"skip":0}', 1);
-        $builder = new Builder($inputData);
-        $arrayFilters = $builder->build()->getFilters();
+        $builder = new Builder();
+        $arrayFilters = $builder->build($inputData)->getFilters();
         $this->assertEmpty($arrayFilters);
     }
 
     public function testFieldNamedAsLikeFilters()
     {
         $inputData = json_decode('{"where":{"like":1}}', 1);
-        $builder = new Builder($inputData);
-        $arrayFilters = $builder->build()->getFilters();
-        $this->assertEquals($arrayFilters[0]->getConditions(), array(EqCondition::create('like', 1)));
+        $builder = new Builder();
+        $arrayFilters = $builder->build($inputData)->getFilters();
+        $this->assertEquals($arrayFilters[0]->getConditions(), [EqCondition::create('like', 1)]);
 
         $inputData = json_decode('{"where":{"like":{"like":1}}}', 1);
-        $builder = new Builder($inputData);
-        $arrayFilters = $builder->build()->getFilters();
-        $this->assertEquals($arrayFilters[0]->getConditions(), array(LikeCondition::create('like', 1)));
+        $builder = new Builder();
+        $arrayFilters = $builder->build($inputData)->getFilters();
+        $this->assertEquals($arrayFilters[0]->getConditions(), [LikeCondition::create('like', 1)]);
 
         $inputData = json_decode('{"where":{"like":{"like":1}}}', 1);
-        $builder = new Builder($inputData);
-        $arrayFilters = $builder->build()->getFilters();
-        $this->assertEquals($arrayFilters[0]->getConditions(), array(LikeCondition::create('like', 1)));
+        $builder = new Builder();
+        $arrayFilters = $builder->build($inputData)->getFilters();
+        $this->assertEquals($arrayFilters[0]->getConditions(), [LikeCondition::create('like', 1)]);
     }
 }

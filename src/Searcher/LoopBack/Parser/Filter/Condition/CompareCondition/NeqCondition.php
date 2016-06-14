@@ -14,9 +14,9 @@ class NeqCondition extends AbstractCondition
     }
 
     /**
-     * @return $this
+     * @inheritdoc
      */
-    public function build()
+    public function build($conditions = null)
     {
         if (is_array($this->getValue())) {
             throw new InvalidConditionException("value must be scalar");

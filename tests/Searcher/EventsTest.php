@@ -132,8 +132,8 @@ class EventsTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $builder = new Builder($inputData, $eventDispatcher);
-        $builder->build();
+        $builder = new Builder($eventDispatcher);
+        $builder->build($inputData);
         $this->assertCount(1, $builder->getFilters());
         $filters = $builder->getFilters();
         $this->assertEquals('or', $filters[0]->getGroup());
@@ -180,8 +180,8 @@ class EventsTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $builder = new Builder($input, $eventDispatcher);
-        $builder->build();
+        $builder = new Builder($eventDispatcher);
+        $builder->build($input);
 
         $this->assertCount(1, $builder->getFilters());
         $filters = $builder->getFilters();

@@ -14,9 +14,9 @@ class LikeCondition extends AbstractCondition
     }
 
     /**
-     * @return $this
+     * @inheritdoc
      */
-    public function build()
+    public function build($conditions = null)
     {
         $value = $this->getValue();
         if (is_array($value)) {

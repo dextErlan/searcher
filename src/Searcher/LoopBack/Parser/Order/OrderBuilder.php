@@ -8,10 +8,11 @@ use Searcher\Events\FieldEvent;
 use Searcher\Events\OrderEvent;
 use Searcher\LoopBack\Parser\BuilderInterface;
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
+use Searcher\LoopBack\Parser\Filter\FilterInterface;
 use Searcher\StringUtils;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class OrderBuilder implements BuilderInterface
+class OrderBuilder implements BuilderInterface, FilterInterface
 {
     const DIRECTION_ASC = 'asc';
     const DIRECTION_DESC = 'desc';
@@ -40,9 +41,10 @@ class OrderBuilder implements BuilderInterface
     }
 
     /**
+     * @inheritdoc
      * @return Order[]
      */
-    public function build()
+    public function build($conditions = null)
     {
 
         if (!is_array($this->condition)) {

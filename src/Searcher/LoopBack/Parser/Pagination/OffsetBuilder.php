@@ -6,9 +6,10 @@ namespace Searcher\LoopBack\Parser\Pagination;
 use Searcher\Events\OffsetEvent;
 use Searcher\LoopBack\Parser\BuilderInterface;
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
+use Searcher\LoopBack\Parser\Filter\FilterInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class OffsetBuilder implements BuilderInterface
+class OffsetBuilder implements BuilderInterface, FilterInterface
 {
     const OFFSET_DEFAULT = 0;
     private $offset = 0;
@@ -46,10 +47,11 @@ class OffsetBuilder implements BuilderInterface
     }
 
     /**
+     * @inheritdoc
      * @return $this
      * @throws InvalidConditionException
      */
-    public function build()
+    public function build($conditions = null)
     {
         if ($this->dispatcher) {
             $this->dispatcher->dispatch(OffsetEvent::EVENT_NAME, new OffsetEvent($this));

@@ -18,10 +18,14 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
     const TERMS = 'terms';
     const REGEXP = 'regexp';
 
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
+
+    /** @var Builder */
+    private $builder;
+
+    /** @var array  */
+    private $results = [];
 
     /**
      * @return LoggerInterface
@@ -36,31 +40,27 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
     }
 
     /**
-     * @var Builder
-     */
-    private $builder;
-
-    /**
      * @param Builder $builder
      * @param LoggerInterface $logger
      */
     public function __construct(Builder $builder, LoggerInterface $logger = null)
     {
-
         $this->builder = $builder;
         $this->logger = $logger;
     }
 
-    private $results = array();
-
-    public function build()
+    /**
+     * @inheritdoc
+     * @return $this
+     */
+    public function build($conditions = null)
     {
-        $rangeOperators = array(
+        $rangeOperators = [
             FilterCondition::CONDITION_GT,
             FilterCondition::CONDITION_GTE,
             FilterCondition::CONDITION_LT,
             FilterCondition::CONDITION_LTE,
-        );
+        ];
 
         $regexpOperators = array(FilterCondition::CONDITION_LIKE);
 
@@ -155,7 +155,7 @@ class ElasticSearchTransformer implements TransformerInterface, BuilderInterface
         return $this;
     }
 
-    public function transform()
+    public function getResult()
     {
         return $this->results;
     }

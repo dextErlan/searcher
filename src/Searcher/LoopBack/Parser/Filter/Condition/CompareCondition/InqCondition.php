@@ -14,7 +14,10 @@ class InqCondition extends AbstractCondition
         return FilterCondition::CONDITION_IN;
     }
 
-    public function build()
+    /**
+     * @inheritdoc
+     */
+    public function build($conditions = null)
     {
         $values = $this->getValue();
         if (!is_array($values)) {

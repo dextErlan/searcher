@@ -8,7 +8,7 @@
 6. Extensions
 
 ## 1. What is searcher?
-Searcher is a library for parsing of structured queries. Query syntax is similar to the Loopback library ()
+Searcher is a library for parsing of structured queries. Query syntax is similar to the [Loopback library](https://docs.strongloop.com/display/public/LB/Querying+data)
 
 Features:
 
@@ -70,7 +70,7 @@ description:
 
 - sort – marker word means that control area has sorting
 - field -  field according to which sorting must be done
-- condition – sort direction, can be ASC (straight sorting) или DESC (inverse sorting)
+- condition – sort direction, can be ASC (straight sorting) or DESC (inverse sorting)
 
 Some filter piculiarities:
 
@@ -85,7 +85,8 @@ Tranformers – objects, which transforms output query to a understandable query
 Transformer must implement TransformerInterface.
 
 ### 5. Example queries (JSON syntax):
-Find first `10` entities starting from `2nd`, where `field == value` and sort it on `field2` ascending:
+Find first `10` entities starting from `2nd`, 
+where `field == value` and sort it on `field2` ascending:
 
 ```
 {
@@ -98,7 +99,9 @@ Find first `10` entities starting from `2nd`, where `field == value` and sort it
 }
 ```
 
-Find all entities where `field` contains at least one of the values in  `[ "value1", "value2", "value3" ]`, and sort it on `field2` ascending and `field3` descending:
+Find all entities where `field` contains at least one of the values 
+in  `[ "value1", "value2", "value3" ]`, and sort it 
+on `field2` ascending and `field3` descending:
 
 ```
 {
@@ -114,9 +117,9 @@ Find all entities where `field < 10 && field2 < 20 && field3 >= 5`:
 ```
 {
 "where" : {
-      "LT":{"field": 10,"field2":20},
-      "GTE":{"field3": 5}
-     }
+    "field": {"LT": 10},
+    "field2": {"LT": 20},
+    "field3": {"GTE": 5}
 }
 ```
 
@@ -125,9 +128,10 @@ Find all entities where ` field3 >= 5 &&  ( field < 10 || field2 < 20 )`:
 ```
 {
     "where" : {
-        "GTE":{"field3": 5},
-        "OR: {
-            "LT":{"field": 10,"field2":20},
+        "field3": {"GTE": 5},
+        "OR": {
+            "field": {"LT":10},
+            "field2": {"LT":20},
         }
     }
 }
@@ -139,10 +143,11 @@ Equivalent:
 {
     "where" : {
         "AND": {
-            "GTE":{"field3": 5}
+            "field3": {"GTE": 5}
         },
         "OR: {
-            "LT":{"field": 10,"field2":20},
+            "field": {"LT": 10},
+            "field2": {"LT": 20},
         }
     }
 }
@@ -224,8 +229,8 @@ $eventDispatcher->addListener(
                 }
             }
         );
-$builder = new Builder($inputQuery, $eventDispatcher);
-$builder->build();
+$builder = new Builder($eventDispatcher);
+$builder->build($inputQuery);
 $esBuilder = new ElasticSearchTransformer($builder->build());
 $result = $esBuilder->build()->transform();
 ```

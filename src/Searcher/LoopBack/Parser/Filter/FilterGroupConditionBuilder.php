@@ -80,9 +80,10 @@ class FilterGroupConditionBuilder implements BuilderInterface
     }
 
     /**
+     * @inheritdoc
      * @return $this
      */
-    public function build()
+    public function build($conditions = null)
     {
         if (!in_array($this->group, $this->acceptedGroups)) {
             throw new InvalidConditionException('invalid group');
@@ -94,16 +95,19 @@ class FilterGroupConditionBuilder implements BuilderInterface
 
         $results = array();
 
-        foreach ($this->parameters as $condition => $fieldValues) {
+        foreach ($this->parameters as $field => $values) {
             $operator = null;
 
-            if (is_array($fieldValues) && !ArrayUtils::isList($fieldValues)) {
-                $operator = $condition;
-            } else {
-                $fieldValues = array($condition => $fieldValues);
+            if (is_scalar($values) || ArrayUtils::isList($values)) {
+                $values = [FilterCondition::CONDITION_EQ => $values];
             }
+//            if (is_array($values) && !ArrayUtils::isList($values)) {
+//                $operator = $condition;
+//            } else {
+//                $fieldValues = array($condition => $fieldValues);
+//            }
 
-            foreach ($fieldValues as $field => $value) {
+            foreach ($values as $operator => $value) {
 
                 $builder = new FilterConditionBuilder();
                 if ($operator !== null) {

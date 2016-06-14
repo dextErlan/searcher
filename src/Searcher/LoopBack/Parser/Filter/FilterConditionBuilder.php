@@ -3,7 +3,6 @@
 namespace Searcher\LoopBack\Parser\Filter;
 
 
-use Searcher\Events\BeforeConditionBuildEvent;
 use Searcher\Events\FieldEvent;
 use Searcher\Events\OperatorEvent;
 use Searcher\LoopBack\Parser\BuilderInterface;
@@ -15,17 +14,17 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class FilterConditionBuilder implements BuilderInterface
 {
-    private $comparesMap = array(
-        FilterCondition::CONDITION_LTE => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\LteCondition",
-        FilterCondition::CONDITION_LT => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\LtCondition",
-        FilterCondition::CONDITION_GT => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\GtCondition",
-        FilterCondition::CONDITION_GTE => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\GteCondition",
-        FilterCondition::CONDITION_IN => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\InqCondition",
-        FilterCondition::CONDITION_NIN => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\NinCondition",
-        FilterCondition::CONDITION_NEQ => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\NeqCondition",
-        FilterCondition::CONDITION_EQ => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\EqCondition",
-        FilterCondition::CONDITION_LIKE => "\\Searcher\\LoopBack\\Parser\\Filter\\Condition\\CompareCondition\\LikeCondition",
-    );
+    private $comparesMap = [
+        FilterCondition::CONDITION_LTE => CompareCondition\LteCondition::class,
+        FilterCondition::CONDITION_LT => CompareCondition\LtCondition::class,
+        FilterCondition::CONDITION_GT => CompareCondition\GtCondition::class,
+        FilterCondition::CONDITION_GTE => CompareCondition\GteCondition::class,
+        FilterCondition::CONDITION_IN => CompareCondition\InqCondition::class,
+        FilterCondition::CONDITION_NIN => CompareCondition\NinCondition::class,
+        FilterCondition::CONDITION_NEQ => CompareCondition\NeqCondition::class,
+        FilterCondition::CONDITION_EQ => CompareCondition\EqCondition::class,
+        FilterCondition::CONDITION_LIKE => CompareCondition\LikeCondition::class,
+    ];
 
     private $compareOperator = FilterCondition::CONDITION_EQ;
 
@@ -77,10 +76,11 @@ class FilterConditionBuilder implements BuilderInterface
     }
 
     /**
+     * @inheritdoc
      * @return ConditionInterface
      * @throws InvalidConditionException
      */
-    public function build()
+    public function build($conditions = null)
     {
         $condition = StringUtils::toLower($this->compareOperator);
 
@@ -104,14 +104,8 @@ class FilterConditionBuilder implements BuilderInterface
         }
 
         $className = $this->comparesMap[$condition];
-        //todo:
-        /* @var $object CompareCondition\AbstractCondition */
-        $object = forward_static_call_array(
-            array($className, "create"),
-            array($this->field, $this->value, $this->dispatcher)
-        );
 
-        return $object;
+        return $className::{'create'}($this->field, $this->value, $this->dispatcher);
     }
 
     /**

@@ -14,9 +14,9 @@ class LtCondition extends AbstractCondition
     }
 
     /**
-     * @return $this
+     * @inheritdoc
      */
-    public function build()
+    public function build($conditions = null)
     {
         $value = $this->getValue();
 
