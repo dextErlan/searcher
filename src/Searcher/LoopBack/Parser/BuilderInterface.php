@@ -8,8 +8,9 @@ use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionExceptio
 interface BuilderInterface {
 
     /**
+     * @param $conditions
      * @return $this
      * @throws InvalidConditionException
      */
-    public function build();
+    public function build($conditions = null);
 }

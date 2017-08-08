@@ -6,9 +6,10 @@ namespace Searcher\LoopBack\Parser\Pagination;
 use Searcher\Events\LimitEvent;
 use Searcher\LoopBack\Parser\BuilderInterface;
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
+use Searcher\LoopBack\Parser\Filter\FilterInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class LimitBuilder implements BuilderInterface
+class LimitBuilder implements BuilderInterface, FilterInterface
 {
 
     const LIMIT_DEFAULT = 25;
@@ -48,10 +49,11 @@ class LimitBuilder implements BuilderInterface
     }
 
     /**
+     * @inheritdoc
      * @return $this
      * @throws InvalidConditionException
      */
-    public function build()
+    public function build($conditions = null)
     {
         if ($this->dispatcher) {
             $this->dispatcher->dispatch(LimitEvent::EVENT_NAME, new LimitEvent($this));
