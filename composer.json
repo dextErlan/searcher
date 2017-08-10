@@ -1,16 +1,16 @@
 {
-  "name": "keltanas/searcher",
+  "name": "anthill/searcher",
   "description": "parse query string",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
     {
-      "name": "Nikolay Ermin",
-      "email": "keltanas@gmail.com"
-    },
-    {
       "name": "Ivan Pyankov",
       "email": "unit.1985@gmail.com"
+    },
+    {
+      "name": "Nikolay Ermin",
+      "email": "keltanas@gmail.com"
     }
   ],
 
@@ -21,7 +21,7 @@
   },
 
   "require": {
-    "php": ">=7.0",
+    "php": ">=5.5",
     "symfony/event-dispatcher": "~2.8",
     "psr/log":"1.0.*"
   },
