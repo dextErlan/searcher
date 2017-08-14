@@ -7,7 +7,11 @@ use Symfony\Component\EventDispatcher\Event;
 
 class LimitEvent extends Event
 {
-    const EVENT_NAME = 'searcher.limit';
+    /**
+     * @deprecated
+     * @see EventNames::LIMIT_EVENT
+     */
+    const EVENT_NAME = EventNames::LIMIT_EVENT;
     /**
      * @var LimitBuilder
      */

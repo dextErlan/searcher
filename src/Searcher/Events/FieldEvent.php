@@ -7,7 +7,12 @@ use Symfony\Component\EventDispatcher\Event;
 
 class FieldEvent extends Event
 {
-    const EVENT_NAME = 'searcher.field';
+    /**
+     * @deprecated
+     * @see EventNames::FIELD_EVENT
+     */
+    const EVENT_NAME = EventNames::FIELD_EVENT;
+
     /**
      * @var
      */

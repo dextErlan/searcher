@@ -7,7 +7,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class GroupEvent extends Event
 {
-    const EVENT_NAME = 'searcher.group';
+    const EVENT_NAME = EventNames::GROUP_EVENT;
     private $groupName;
 
     public function __construct($groupName)

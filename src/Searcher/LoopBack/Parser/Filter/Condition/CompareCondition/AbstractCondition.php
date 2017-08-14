@@ -4,6 +4,7 @@ namespace Searcher\LoopBack\Parser\Filter\Condition\CompareCondition;
 
 
 use Searcher\Events\ConditionEvent;
+use Searcher\Events\EventNames;
 use Searcher\LoopBack\Parser\BuilderInterface;
 use Searcher\LoopBack\Parser\Filter\Condition\ConditionInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -72,9 +73,14 @@ abstract class AbstractCondition implements BuilderInterface, ConditionInterface
         $instance->setValue($value);
         $instance->setDispatcher($dispatcher);
         if ($dispatcher) {
-            $dispatcher->dispatch(ConditionEvent::EVENT_NAME, new ConditionEvent($instance));
+            $dispatcher->dispatch(EventNames::CONDITION_PRE_POPULATE_EVENT, new ConditionEvent($instance));
         }
 
-        return $instance->build();
+        $instance = $instance->build();
+        if ($dispatcher) {
+            $dispatcher->dispatch(EventNames::CONDITION_POST_POPULATE_EVENT, new ConditionEvent($instance));
+        }
+
+        return $instance;
     }
 }

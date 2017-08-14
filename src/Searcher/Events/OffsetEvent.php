@@ -7,7 +7,11 @@ use Symfony\Component\EventDispatcher\Event;
 
 class OffsetEvent extends Event
 {
-    const EVENT_NAME = 'searcher.offset';
+    /**
+     * @deprecated
+     * @see EventNames::OFFSET_EVENT
+     */
+    const EVENT_NAME = EventNames::OFFSET_EVENT;
     /**
      * @var OffsetBuilder
      */

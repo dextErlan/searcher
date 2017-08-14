@@ -8,7 +8,11 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ConditionEvent extends Event
 {
-    const EVENT_NAME = 'searcher.condition';
+    /**
+     * @deprecated
+     * @see EventNames::CONDITION_PRE_POPULATE_EVENT
+     */
+    const EVENT_NAME = EventNames::CONDITION_PRE_POPULATE_EVENT;
     /**
      * @var AbstractCondition
      */
