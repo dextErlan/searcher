@@ -49,6 +49,7 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
             LtCondition::create('field6', 1),
             LtCondition::create('field7', 8),
             GtCondition::create('field9', 3),
+            GtCondition::create('field10', 'ololo'),
             NeqCondition::create('field12', 'asd'),
             LikeCondition::create('field15', 'asd'),
         ];
@@ -182,8 +183,8 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                     'field3' => 321,
                     'field6' => ['lt' => 1],
                     'field7' => ['lt' => 8],
-
                     'field9' => ['gt' => 3],
+                    'field10' => ['gt' => 'ololo'],
                 ]
             ),
             FilterGroupConditionBuilder::create(
@@ -191,9 +192,8 @@ class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
                 [
                     'field2' => 000,
                     'field3' => 111,
-
                     'field9' => ['gt' => 3],
-
+                    'field10' => ['gt' => 'ololo'],
                     'field11' => ['neq' => ['asd', 1, 2, 3]],
                     'field12' => ['neq' => 'asd'],
                 ]

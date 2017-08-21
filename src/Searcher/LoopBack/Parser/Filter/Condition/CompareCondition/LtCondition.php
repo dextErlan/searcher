@@ -6,30 +6,10 @@ namespace Searcher\LoopBack\Parser\Filter\Condition\CompareCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\Exception\InvalidConditionException;
 use Searcher\LoopBack\Parser\Filter\FilterCondition;
 
-class LtCondition extends AbstractCondition
+class LtCondition extends EqCondition
 {
     public function getOperator()
     {
         return FilterCondition::CONDITION_LT;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function build($conditions = null)
-    {
-        $value = $this->getValue();
-
-        if (is_array($value)) {
-            throw new InvalidConditionException('$value must be integer, array given');
-        }
-
-        if (!is_numeric($value)) {
-            throw new InvalidConditionException('$value must be integer');
-        }
-
-        $this->setValue($value);
-
-        return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace Searcher\LoopBack\Parser\Filter\Condition\CompareCondition;
 
 use Searcher\LoopBack\Parser\Filter\FilterCondition;
 
-class GteCondition extends GtCondition
+class GteCondition extends EqCondition
 {
     public function getOperator()
     {
