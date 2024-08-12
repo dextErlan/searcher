@@ -54,7 +54,7 @@ class OffsetBuilder implements BuilderInterface, FilterInterface
     public function build($conditions = null)
     {
         if ($this->dispatcher) {
-            $this->dispatcher->dispatch(OffsetEvent::EVENT_NAME, new OffsetEvent($this));
+            $this->dispatcher->dispatch(new OffsetEvent($this), OffsetEvent::EVENT_NAME);
         }
 
         return $this;

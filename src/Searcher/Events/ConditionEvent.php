@@ -4,7 +4,7 @@ namespace Searcher\Events;
 
 
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\AbstractCondition;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ConditionEvent extends Event
 {

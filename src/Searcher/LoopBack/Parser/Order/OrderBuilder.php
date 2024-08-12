@@ -78,8 +78,8 @@ class OrderBuilder implements BuilderInterface, FilterInterface
         }
 
         if ($this->dispatcher) {
-            $this->dispatcher->dispatch(OrderEvent::EVENT_NAME, new OrderEvent($field, $direction));
-            $this->dispatcher->dispatch(FieldEvent::EVENT_NAME, new FieldEvent($field));
+            $this->dispatcher->dispatch(new OrderEvent($field, $direction),OrderEvent::EVENT_NAME);
+            $this->dispatcher->dispatch(new FieldEvent($field), FieldEvent::EVENT_NAME);
         }
 
         return new Order($field, $direction);

@@ -90,7 +90,7 @@ class FilterGroupConditionBuilder implements BuilderInterface
         }
 
         if ($this->dispatcher) {
-            $this->dispatcher->dispatch(GroupEvent::EVENT_NAME, new GroupEvent($this->group));
+            $this->dispatcher->dispatch(new GroupEvent($this->group), GroupEvent::EVENT_NAME);
         }
 
         $results = array();

@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  searcher:
+    build: .
+    volumes:
+      - '.:/var/www'

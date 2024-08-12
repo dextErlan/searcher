@@ -3,7 +3,7 @@
 namespace Searcher\Events;
 
 use Searcher\LoopBack\Parser\Pagination\LimitBuilder;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class LimitEvent extends Event
 {

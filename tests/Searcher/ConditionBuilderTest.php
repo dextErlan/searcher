@@ -1,8 +1,9 @@
 <?php
 
-namespace Searcher;
+namespace Tests\Searcher;
 
 
+use PHPUnit\Framework\TestCase;
 use Searcher\LoopBack\Parser\Builder;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\EqCondition;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\GtCondition;
@@ -15,7 +16,7 @@ use Searcher\LoopBack\Parser\Filter\FilterGroupBuilder;
 use Searcher\LoopBack\Parser\Filter\FilterGroupConditionBuilder;
 use Searcher\LoopBack\Parser\Order\Order;
 
-class ConditionBuilderTest extends \PHPUnit_Framework_TestCase
+class ConditionBuilderTest extends TestCase
 {
     public function testSimpleCondition()
     {

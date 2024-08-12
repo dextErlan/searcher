@@ -56,7 +56,7 @@ class LimitBuilder implements BuilderInterface, FilterInterface
     public function build($conditions = null)
     {
         if ($this->dispatcher) {
-            $this->dispatcher->dispatch(LimitEvent::EVENT_NAME, new LimitEvent($this));
+            $this->dispatcher->dispatch(new LimitEvent($this), LimitEvent::EVENT_NAME);
         }
 
         return $this;

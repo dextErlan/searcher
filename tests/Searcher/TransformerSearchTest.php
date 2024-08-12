@@ -1,11 +1,12 @@
 <?php
-namespace Searcher;
+namespace Tests\Searcher;
 
 
+use PHPUnit\Framework\TestCase;
 use Searcher\LoopBack\Parser\Builder;
 use Searcher\Transformer\ElasticSearchTransformer;
 
-class TransformerSearchTest extends \PHPUnit_Framework_TestCase
+class TransformerSearchTest extends TestCase
 {
 
     public function testElasticTransformer()

@@ -86,8 +86,8 @@ class FilterConditionBuilder implements BuilderInterface
 
         if ($this->dispatcher) {
             $this->dispatcher->dispatch(
-                OperatorEvent::EVENT_NAME,
-                new OperatorEvent($condition, $this->field, $this->value)
+                new OperatorEvent($condition, $this->field, $this->value),
+                OperatorEvent::EVENT_NAME
             );
         }
 
@@ -100,7 +100,7 @@ class FilterConditionBuilder implements BuilderInterface
         }
 
         if ($this->dispatcher) {
-            $this->dispatcher->dispatch(FieldEvent::EVENT_NAME, new FieldEvent($this->field));
+            $this->dispatcher->dispatch(new FieldEvent($this->field), FieldEvent::EVENT_NAME);
         }
 
         $className = $this->comparesMap[$condition];

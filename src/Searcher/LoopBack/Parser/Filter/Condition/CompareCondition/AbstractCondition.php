@@ -73,12 +73,12 @@ abstract class AbstractCondition implements BuilderInterface, ConditionInterface
         $instance->setValue($value);
         $instance->setDispatcher($dispatcher);
         if ($dispatcher) {
-            $dispatcher->dispatch(EventNames::CONDITION_PRE_POPULATE_EVENT, new ConditionEvent($instance));
+            $dispatcher->dispatch(new ConditionEvent($instance), EventNames::CONDITION_PRE_POPULATE_EVENT);
         }
 
         $instance = $instance->build();
         if ($dispatcher) {
-            $dispatcher->dispatch(EventNames::CONDITION_POST_POPULATE_EVENT, new ConditionEvent($instance));
+            $dispatcher->dispatch(new ConditionEvent($instance), EventNames::CONDITION_POST_POPULATE_EVENT);
         }
 
         return $instance;

@@ -1,8 +1,9 @@
 <?php
 
-namespace Searcher;
+namespace Tests\Searcher;
 
 
+use PHPUnit\Framework\TestCase;
 use Searcher\Events\ConditionEvent;
 use Searcher\Events\FieldEvent;
 use Searcher\Events\GroupEvent;
@@ -18,7 +19,7 @@ use Searcher\LoopBack\Parser\Filter\FilterConditionBuilder;
 use Searcher\LoopBack\Parser\Order\Order;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class EventsTest extends \PHPUnit_Framework_TestCase
+class EventsTest extends TestCase
 {
 
     public function testEventFilters()

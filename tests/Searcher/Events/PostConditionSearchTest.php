@@ -1,15 +1,18 @@
 <?php
 
-namespace Searcher\Events;
+namespace Tests\Searcher\Events;
 
 
+use PHPUnit\Framework\TestCase;
+use Searcher\Events\ConditionEvent;
+use Searcher\Events\EventNames;
 use Searcher\LoopBack\Parser\Builder;
 use Searcher\LoopBack\Parser\Filter\Condition\CompareCondition\EqCondition;
 use Searcher\LoopBack\Parser\Filter\FilterCondition;
 use Searcher\LoopBack\Parser\Filter\FilterGroupConditionBuilder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class PostConditionSearchTest extends \PHPUnit_Framework_TestCase
+class PostConditionSearchTest extends TestCase
 {
 
     private function getInputData()

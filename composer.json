@@ -1,8 +1,9 @@
 {
-    "name": "anthill/searcher",
+    "name": "skerl/searcher",
     "description": "parse query string",
-    "minimum-stability": "stable",
+    "type": "library",
     "license": "MIT",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Ivan Pyankov",
@@ -11,19 +12,24 @@
         {
             "name": "Nikolay Ermin",
             "email": "keltanas@gmail.com"
+        },
+        {
+            "name": "Yerlan Sarsengaliyev",
+            "email": "erlan85@gmail.com"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Searcher\\": "src/Searcher"
+            "Searcher\\": "src/Searcher",
+            "Tests\\": "tests/"
         }
     },
     "require": {
-        "php": ">=5.5",
-        "symfony/event-dispatcher": "~2.8 || ~3.0",
-        "psr/log": "1.0.*"
+        "php": ">=7.4",
+        "psr/log": "^1.1",
+        "symfony/event-dispatcher": "^5.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.8"
+        "phpunit/phpunit": "^9.6"
     }
 }

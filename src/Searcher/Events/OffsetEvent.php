@@ -3,7 +3,7 @@
 namespace Searcher\Events;
 
 use Searcher\LoopBack\Parser\Pagination\OffsetBuilder;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class OffsetEvent extends Event
 {
